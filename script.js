@@ -1,58 +1,73 @@
-class TicTacToe {
-    constructor() {
-        this.board = Array(9).fill(null);
-        this.currentPlayer = 'X';
-        this.winner = null;
-    }
+function createPlayer(name, marker) {
+    return {
+        name, marker
+    };
+}
+  
+const player1 = createPlayer('steve', 'X');
+const player2 = createPlayer('also steve', 'O');
+const PLAYER1WIN = 1;
+const PLAYER2WIN = 2;
+const DRAW = 3;
 
-    makeMove(index) {
-        if (this.board[index] || this.winner) return false;
-        
-        this.board[index] = this.currentPlayer;
-        this.checkWinner();
-        this.switchPlayer();
-        return true;
-    }
+//IIFE!!!
+const gameBoard = (function() {
+    let board = ["X","O","X",
+                "O","O","X",
+                "X","X","O"
+    ];
 
-    checkWinner() {
-        const winPatterns = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-            [0, 4, 8], [2, 4, 6]             // Diagonals
-        ];
+    const update = (index, marker) => {
+        if (board[index] == ""){
+            board[index] = marker;
+        }          
+    } 
 
+    const winPatterns = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+        [0, 4, 8], [2, 4, 6]             // Diagonals
+    ];
+
+    const checkWinner = () => {
+        //check winner using patterns
         for (let pattern of winPatterns) {
-            const [a, b, c] = pattern;
-            if (
-                this.board[a] && 
-                this.board[a] === this.board[b] && 
-                this.board[a] === this.board[c]
-            ) {
-                this.winner = this.board[a];
-                console.log("Winner")
-                return true;
+            const [a,b,c] = pattern;
+            if (board[a] &&
+                board[a] === board[b] &&
+                board[a] === board[c]
+            ){
+                if (board[a] == "X"){;
+                    return PLAYER1WIN;
+                } else {;
+                    return PLAYER2WIN;
+                }
             }
         }
-
-        if (this.board.every(cell => cell !== null)) {
-            this.winner = 'Draw';
+        if (board.every(cell => cell !== "")) {
+            return DRAW;
         }
 
-        return false;
+        return null;
     }
 
-    switchPlayer() {
-        this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
-    }
+    return {
+        getBoard: () => board,
+        update,
+        checkWinner
+    };
+})();
 
-    reset() {
-        this.board = Array(9).fill(null);
-        this.currentPlayer = 'X';
-        this.winner = null;
-    }
+gameBoard.update(0,player1.marker);
+gameBoard.update(0,player2.marker);
+
+console.log(gameBoard.getBoard());
+let winner = gameBoard.checkWinner();
+
+if (winner == PLAYER1WIN) {
+    console.log('congrats ' + player1.name);
+} else if (winner == PLAYER2WIN) {
+    console.log('congrats ' + player2.name);
+} else if (winner == DRAW) {
+    console.log('DRAW');
 }
-
-// Example usage
-const game = new TicTacToe();
-game.makeMove(0); // Places 'X' at index 0
-game.makeMove(4); // Places 'O' at index 4
