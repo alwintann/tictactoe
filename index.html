@@ -7,7 +7,23 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
+
+    <div id="playerSelect" class="container">
+        <h1>TIC TAC TOE</h1>
+        <div class="player-form">
+            <div class="input-group">
+                <label for="player1">Player 1 (X):</label>
+                <input type="text" id="player1" placeholder="Enter name">
+            </div>
+            <div class="input-group"></div>
+                <label for="player2">Player 2 (O):</label>
+                <input type="text" id="player2" placeholder="Enter name">
+            </div>
+            <button id="startGame">Start Game</button>
+        </div>
+    </div>
+
+    <div class="container" id="gameScreen" style="display: none;">
         <h1>TIC TAC TOE</h1>
         <div class="gameBoard">
             <div class="cell" data-index="0"></div>
@@ -19,6 +35,12 @@
             <div class="cell" data-index="6"></div>
             <div class="cell" data-index="7"></div>
             <div class="cell" data-index="8"></div>
+        </div>
+        <div id="winnerModal" class="modal">
+            <div class="modal-content">
+                <p id="winnerText"></p>
+                <button id="closeModal">Play Again</button>
+            </div>
         </div>
         <button id="resetButton">RESET GAME</div>
     </div>

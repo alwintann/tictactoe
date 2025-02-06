@@ -4,11 +4,12 @@ class Player {
         this.marker = marker;
     }
 }
-const player1 = "STEEEVE"
-const player2 = "NOT STEEEVE"
+const player1Input = document.getElementById('player1');
+const player2Input = document.getElementById('player2');
 const PLAYER1WIN = 1;
 const PLAYER2WIN = 2;
 const DRAW = 3;
+let gameEnded = false;
 
 class GameBoard {
     constructor() {
@@ -40,8 +41,10 @@ class GameBoard {
                 this.board[a] === this.board[c]
             ) {
                 if (this.board[a] == "X"){;
+                    gameEnded = true;
                     return PLAYER1WIN;
-                } else {;
+                } else {
+                    gameEnded = true;
                     return PLAYER2WIN;
                 }
             }
@@ -49,6 +52,7 @@ class GameBoard {
 
         // Check for draw
         if (this.board.every(cell => cell !== "")) {
+            gameEnded = true;
             return 'Draw';
         }
 
@@ -107,18 +111,35 @@ class TicTacToe {
 }
 
 // Example usage:
-const game = new TicTacToe(player1, player2);
+
+
 const cells = document.querySelectorAll('.cell')
+const modal = document.getElementById('winnerModal');
+const closeModal = document.getElementById('closeModal');
+const gameScreen = document.getElementById('gameScreen');
+const startGameBtn = document.getElementById('startGame');
+const playerSelect = document.getElementById('playerSelect');
+
+
+let game;
+
+startGameBtn.addEventListener('click', () => {
+    const player1 = player1Input.value.trim() || "Player 1";
+    const player2 = player2Input.value.trim() || "Player 2";
+    console.log(player1 + player2);
+    game = new TicTacToe(player1, player2);
+
+    playerSelect.style.display = "none";
+    gameScreen.style.display = "block";
+})
+
+
+
 cells.forEach(cell => {
     cell.addEventListener('click', () => {
+
         const index = cell.getAttribute('data-index');
-        //make move and get result
         const moveResult = game.makeMove(index);
-
-        console.log('move result' + moveResult)
-        //console.log(game.getCurrentPlayer()); // Shows current player
-        //console.log(game.gameBoard.getBoard()); // View current board state
-
         if (moveResult !== false) {
             const currentMarker = game.gameBoard.getBoard()[index];
             //console.log('currentmarker' + currentMarker)
@@ -127,14 +148,33 @@ cells.forEach(cell => {
 
         }
 
-        let winner = game.gameBoard.checkWinner();
-        if (winner == PLAYER1WIN) {
-            console.log('congrats ' + player1);
-        } else if (winner == PLAYER2WIN) {
-            console.log('congrats ' + player2);
-        } else if (winner == DRAW) {
-            console.log('DRAW');
+        //prevent moves if game is ended
+        function showWinnerModal(message) {
+            winnerText.textContent = message;
+            modal.style.display = 'flex';
         }
+    
+
+        if (gameEnded) {
+            const player1 = player1Input.value.trim() || "Player 1";
+            const player2 = player2Input.value.trim() || "Player 2";
+            let winner = game.gameBoard.checkWinner();
+            if (winner == PLAYER1WIN) {
+                showWinnerModal(player1 + ' wins!');
+                //console.log('congrats ' + player1);
+            } else if (winner == PLAYER2WIN) {
+                showWinnerModal(player2 + ' wins!');
+                //console.log('congrats ' + player2);
+            } else if (winner == DRAW) {
+                showWinnerModal('Its a draw');
+                //console.log('DRAW');
+            }
+            return;
+        }
+
+        //console.log('move result' + moveResult)
+        //console.log(game.getCurrentPlayer()); // Shows current player
+        //console.log(game.gameBoard.getBoard()); // View current board state
 
     });
 
@@ -142,6 +182,7 @@ cells.forEach(cell => {
 
 })
 resetButton.addEventListener('click', () => {
+    gameEnded = false;
     //console.log("event triggered");
     const startingPlayer = game.reset();
     //clear cells
@@ -150,6 +191,19 @@ resetButton.addEventListener('click', () => {
         cell.classList.remove('x', 'o');
     })
 });
+
+function hideModal() {
+    modal.style.display = 'none';
+    gameEnded = false;
+    //console.log("event triggered");
+    const startingPlayer = game.reset();
+    //clear cells
+    cells.forEach(cell => {
+        cell.textContent = "";
+        cell.classList.remove('x', 'o');
+    })
+}
+closeModal.addEventListener('click', hideModal);
 
 
 
