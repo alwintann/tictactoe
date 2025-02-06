@@ -190,6 +190,12 @@ resetButton.addEventListener('click', () => {
         cell.textContent = "";
         cell.classList.remove('x', 'o');
     })
+    // Show player select screen
+    gameScreen.style.display = 'none';
+    playerSelect.style.display = 'block';
+    // Clear input fields
+    player1Input.value = '';
+    player2Input.value = '';
 });
 
 function hideModal() {
